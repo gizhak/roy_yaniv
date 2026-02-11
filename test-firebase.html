@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔥 Firebase Test - בדיקת Firebase</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .test-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .test-section h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            margin: 5px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .output {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .success {
+            color: #00ff00;
+        }
+
+        .error {
+            color: #ff4444;
+        }
+
+        .warning {
+            color: #ffaa00;
+        }
+
+        .info {
+            color: #00aaff;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+
+        .status.waiting {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .status.success {
+            background: #4caf50;
+            color: white;
+        }
+
+        .status.error {
+            background: #f44336;
+            color: white;
+        }
+
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .clear-btn {
+            background: #dc3545;
+        }
+
+        .step {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .step.active {
+            border-color: #667eea;
+        }
+
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🔥 Firebase Test</h1>
+        <p class="subtitle">בדיקת חיבור ל-Firebase Firestore</p>
+
+        <div id="connectionStatus" class="status waiting">⏳ ממתין לבדיקה...</div>
+
+        <!-- Step 1: Setup Check -->
+        <div class="test-section">
+            <h2><span class="step-number">1</span> בדיקת הגדרות</h2>
+            <div class="buttons">
+                <button onclick="checkFirebaseConfig()">בדוק Firebase Config</button>
+                <button onclick="testConnection()">בדוק חיבור</button>
+            </div>
+            <div id="setupOutput" class="output" style="display: none;"></div>
+        </div>
+
+        <!-- Step 2: Data Initialization -->
+        <div class="test-section">
+            <h2><span class="step-number">2</span> אתחול נתונים</h2>
+            <div class="buttons">
+                <button onclick="initializeData()">טען נתונים מ-data.json</button>
+                <button onclick="checkCollections()">בדוק Collections</button>
+            </div>
+            <div id="initOutput" class="output" style="display: none;"></div>
+        </div>
+
+        <!-- Step 3: CRUD Operations -->
+        <div class="test-section">
+            <h2><span class="step-number">3</span> בדיקת פעולות CRUD</h2>
+            <div class="buttons">
+                <button onclick="testRead()">קרא (Read)</button>
+                <button onclick="testCreate()">צור (Create)</button>
+                <button onclick="testUpdate()">עדכן (Update)</button>
+                <button onclick="testDelete()">מחק (Delete)</button>
+            </div>
+            <div id="crudOutput" class="output" style="display: none;"></div>
+        </div>
+
+        <!-- Step 4: Integration Test -->
+        <div class="test-section">
+            <h2><span class="step-number">4</span> בדיקה מלאה</h2>
+            <div class="buttons">
+                <button onclick="runFullTest()">🚀 הרץ בדיקה מלאה</button>
+                <button class="clear-btn" onclick="clearAll()">🗑️ נקה הכל</button>
+            </div>
+            <div id="fullTestOutput" class="output" style="display: none;"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { firebaseService } from './js/services/firebase.service.js';
+
+        // Make functions available globally
+        window.firebaseService = firebaseService;
+
+        window.log = (outputId, message, type = 'info') => {
+            const output = document.getElementById(outputId);
+            output.style.display = 'block';
+            const timestamp = new Date().toLocaleTimeString('he-IL');
+            const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️';
+            output.innerHTML += `<span class="${type}">[${timestamp}] ${icon} ${message}</span>\n`;
+            output.scrollTop = output.scrollHeight;
+        };
+
+        window.clearOutput = (outputId) => {
+            const output = document.getElementById(outputId);
+            output.innerHTML = '';
+            output.style.display = 'none';
+        };
+
+        window.setStatus = (status, type) => {
+            const statusEl = document.getElementById('connectionStatus');
+            statusEl.textContent = status;
+            statusEl.className = `status ${type}`;
+        };
+
+        // Test Functions
+        window.checkFirebaseConfig = async () => {
+            clearOutput('setupOutput');
+            log('setupOutput', 'בודק הגדרות Firebase...', 'info');
+
+            try {
+                const config = firebaseService.COLLECTIONS;
+                log('setupOutput', `Collections: ${JSON.stringify(config, null, 2)}`, 'success');
+                log('setupOutput', 'ההגדרות נראות תקינות!', 'success');
+            } catch (error) {
+                log('setupOutput', `שגיאה: ${error.message}`, 'error');
+            }
+        };
+
+        window.testConnection = async () => {
+            clearOutput('setupOutput');
+            log('setupOutput', 'מתחבר ל-Firebase...', 'info');
+
+            try {
+                const userData = await firebaseService.getUserData();
+                if (userData) {
+                    log('setupOutput', 'החיבור הצליח! ✨', 'success');
+                    log('setupOutput', `נמצאו נתונים: ${JSON.stringify(userData, null, 2)}`, 'success');
+                    setStatus('✅ מחובר ל-Firebase', 'success');
+                } else {
+                    log('setupOutput', 'החיבור הצליח אבל אין נתונים', 'warning');
+                    log('setupOutput', 'הרץ "טען נתונים מ-data.json"', 'warning');
+                    setStatus('⚠️ מחובר אבל אין נתונים', 'warning');
+                }
+            } catch (error) {
+                log('setupOutput', `שגיאת חיבור: ${error.message}`, 'error');
+                log('setupOutput', 'בדוק את firebase-config.js ואת Security Rules', 'error');
+                setStatus('❌ כישלון בחיבור', 'error');
+            }
+        };
+
+        window.initializeData = async () => {
+            clearOutput('initOutput');
+            log('initOutput', 'טוען את data.json...', 'info');
+
+            try {
+                const response = await fetch('data.json');
+                const data = await response.json();
+                log('initOutput', 'data.json נטען בהצלחה', 'success');
+
+                log('initOutput', 'שומר ל-Firebase...', 'info');
+                await firebaseService.initFromJSON(data);
+
+                log('initOutput', '✨ הנתונים נטענו ל-Firebase בהצלחה!', 'success');
+                log('initOutput', `- User Data: ${data.user.name}`, 'info');
+                log('initOutput', `- Products: ${data.products.length} פריטים`, 'info');
+                log('initOutput', `- Testimonials: ${data.testimonials.length} המלצות`, 'info');
+                setStatus('✅ הנתונים נטענו', 'success');
+            } catch (error) {
+                log('initOutput', `שגיאה: ${error.message}`, 'error');
+                setStatus('❌ שגיאה באתחול', 'error');
+            }
+        };
+
+        window.checkCollections = async () => {
+            clearOutput('initOutput');
+            log('initOutput', 'בודק Collections...', 'info');
+
+            try {
+                const user = await firebaseService.getUserData();
+                const products = await firebaseService.getProducts();
+                const testimonials = await firebaseService.getTestimonials();
+
+                log('initOutput', '📊 סטטיסטיקות:', 'info');
+                log('initOutput', `- User Data: ${user ? '✅ קיים' : '❌ חסר'}`, user ? 'success' : 'error');
+                log('initOutput', `- Products: ${products.length} פריטים`, products.length > 0 ? 'success' : 'warning');
+                log('initOutput', `- Testimonials: ${testimonials.length} המלצות`, testimonials.length > 0 ? 'success' : 'warning');
+
+                if (products.length > 0) {
+                    log('initOutput', `\nמוצר לדוגמה: ${products[0].title}`, 'info');
+                }
+            } catch (error) {
+                log('initOutput', `שגיאה: ${error.message}`, 'error');
+            }
+        };
+
+        window.testRead = async () => {
+            clearOutput('crudOutput');
+            log('crudOutput', 'בודק קריאה (Read)...', 'info');
+
+            try {
+                const products = await firebaseService.getProducts();
+                log('crudOutput', `✅ נקראו ${products.length} מוצרים`, 'success');
+
+                if (products.length > 0) {
+                    log('crudOutput', `דוגמה: ${JSON.stringify(products[0], null, 2)}`, 'info');
+                }
+            } catch (error) {
+                log('crudOutput', `❌ שגיאה: ${error.message}`, 'error');
+            }
+        };
+
+        window.testCreate = async () => {
+            clearOutput('crudOutput');
+            log('crudOutput', 'בודק יצירה (Create)...', 'info');
+
+            try {
+                const testProduct = {
+                    title: 'קורס בדיקה',
+                    description: 'זהו קורס לבדיקה בלבד',
+                    price: 99,
+                    image: 'https://via.placeholder.com/400x300'
+                };
+
+                const created = await firebaseService.addProduct(testProduct);
+                log('crudOutput', `✅ נוצר מוצר חדש: ${created.id}`, 'success');
+                log('crudOutput', JSON.stringify(created, null, 2), 'info');
+
+                // Save ID for other tests
+                window.testProductId = created.id;
+            } catch (error) {
+                log('crudOutput', `❌ שגיאה: ${error.message}`, 'error');
+            }
+        };
+
+        window.testUpdate = async () => {
+            clearOutput('crudOutput');
+            log('crudOutput', 'בודק עדכון (Update)...', 'info');
+
+            try {
+                if (!window.testProductId) {
+                    log('crudOutput', '⚠️ קודם צור מוצר חדש', 'warning');
+                    return;
+                }
+
+                const updated = await firebaseService.updateProduct({
+                    id: window.testProductId,
+                    title: 'קורס בדיקה - מעודכן!',
+                    description: 'התיאור עודכן',
+                    price: 149,
+                    image: 'https://via.placeholder.com/400x300'
+                });
+
+                log('crudOutput', `✅ המוצר עודכן: ${updated.id}`, 'success');
+                log('crudOutput', JSON.stringify(updated, null, 2), 'info');
+            } catch (error) {
+                log('crudOutput', `❌ שגיאה: ${error.message}`, 'error');
+            }
+        };
+
+        window.testDelete = async () => {
+            clearOutput('crudOutput');
+            log('crudOutput', 'בודק מחיקה (Delete)...', 'info');
+
+            try {
+                if (!window.testProductId) {
+                    log('crudOutput', '⚠️ קודם צור מוצר חדש', 'warning');
+                    return;
+                }
+
+                await firebaseService.removeProduct(window.testProductId);
+                log('crudOutput', `✅ המוצר נמחק: ${window.testProductId}`, 'success');
+                window.testProductId = null;
+            } catch (error) {
+                log('crudOutput', `❌ שגיאה: ${error.message}`, 'error');
+            }
+        };
+
+        window.runFullTest = async () => {
+            clearOutput('fullTestOutput');
+            log('fullTestOutput', '🚀 מתחיל בדיקה מלאה...', 'info');
+            log('fullTestOutput', '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'info');
+
+            try {
+                // Test 1: Connection
+                log('fullTestOutput', '\n1️⃣ בודק חיבור...', 'info');
+                const user = await firebaseService.getUserData();
+                log('fullTestOutput', user ? '   ✅ חיבור תקין' : '   ⚠️ אין נתונים', user ? 'success' : 'warning');
+
+                // Test 2: Read All
+                log('fullTestOutput', '\n2️⃣ קורא נתונים...', 'info');
+                const products = await firebaseService.getProducts();
+                const testimonials = await firebaseService.getTestimonials();
+                log('fullTestOutput', `   ✅ ${products.length} מוצרים`, 'success');
+                log('fullTestOutput', `   ✅ ${testimonials.length} המלצות`, 'success');
+
+                // Test 3: Create
+                log('fullTestOutput', '\n3️⃣ יוצר מוצר בדיקה...', 'info');
+                const newProduct = await firebaseService.addProduct({
+                    title: 'Full Test Product',
+                    description: 'Created by full test',
+                    price: 199,
+                    image: 'https://via.placeholder.com/400x300'
+                });
+                log('fullTestOutput', `   ✅ נוצר: ${newProduct.id}`, 'success');
+
+                // Test 4: Update
+                log('fullTestOutput', '\n4️⃣ מעדכן...', 'info');
+                await firebaseService.updateProduct({
+                    ...newProduct,
+                    title: 'Full Test Product - Updated'
+                });
+                log('fullTestOutput', '   ✅ עודכן בהצלחה', 'success');
+
+                // Test 5: Delete
+                log('fullTestOutput', '\n5️⃣ מוחק...', 'info');
+                await firebaseService.removeProduct(newProduct.id);
+                log('fullTestOutput', '   ✅ נמחק בהצלחה', 'success');
+
+                log('fullTestOutput', '\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'info');
+                log('fullTestOutput', '🎉 כל הבדיקות עברו בהצלחה!', 'success');
+                setStatus('✅ הכל עובד מצוין!', 'success');
+
+            } catch (error) {
+                log('fullTestOutput', '\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'error');
+                log('fullTestOutput', `❌ הבדיקה נכשלה: ${error.message}`, 'error');
+                setStatus('❌ יש בעיה', 'error');
+            }
+        };
+
+        window.clearAll = () => {
+            ['setupOutput', 'initOutput', 'crudOutput', 'fullTestOutput'].forEach(id => {
+                clearOutput(id);
+            });
+            setStatus('⏳ ממתין לבדיקה...', 'waiting');
+        };
+
+        // Auto-check on load
+        setTimeout(() => {
+            testConnection();
+        }, 500);
+    </script>
+</body>
+
+</html>

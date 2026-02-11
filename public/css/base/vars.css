@@ -1,0 +1,32 @@
+/* CSS Variables */
+:root {
+    --clr-primary: #2C3E50;
+    --clr-secondary: #3498DB;
+    --clr-accent: #1ABC9C;
+    --clr-text: #2C3E50;
+    --clr-text-light: #7F8C8D;
+    --clr-bg: #FFFFFF;
+    --clr-bg-alt: #F8F9FA;
+    --clr-card: #FFFFFF;
+    --gray1: #F8F9FA;
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.15);
+    --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.2);
+    --transition: all 0.3s ease;
+}
+
+/* Dark Mode */
+[data-theme="dark"] {
+    --clr-primary: #E0E0E0;
+    --clr-secondary: #BDBDBD;
+    --clr-accent: #9E9E9E;
+    --clr-text: #FFFFFF;
+    --clr-text-light: #B0B0B0;
+    --clr-bg: #000000;
+    --clr-bg-alt: #1a1a1a;
+    --clr-card: #1E1E1E;
+    --gray1: #1E1E1E;
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.5);
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.6);
+    --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.7);
+}
