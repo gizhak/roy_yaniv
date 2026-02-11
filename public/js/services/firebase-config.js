@@ -13,7 +13,7 @@ const firebaseConfig = {
     // 🎯 Client ID - Unique identifier for each landing page client
     // Change this for each client (e.g., "yossi-cohen", "sara-levy", "danny-golan")
     // All clients can use the SAME Firebase project!
-    clientId: "demo-client"
+    clientId: "roy-yaniv"
 };
 
 export default firebaseConfig;
