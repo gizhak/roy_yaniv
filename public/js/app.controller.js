@@ -9,7 +9,7 @@ const DEFAULT_TESTIMONIAL_IMAGE = 'https://via.placeholder.com/100x100?text=👤
 
 // מספר הטלפון של המפתח - שנה למספר שלך
 // Developer phone number for "רוצים גם?" link
-const DEV_PHONE = '0507402462'
+const DEV_PHONE = '+972507402462'
 
 // To make things easier in this project structure
 // functions that are called from DOM are defined on a global app object
