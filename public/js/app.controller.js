@@ -319,16 +319,15 @@ function updateCarouselArrows(gridId) {
 
     arrows.forEach(arrow => {
         arrow.classList.remove('hidden')
-        // RTL: scrollLeft is negative in RTL
         const scrollLeft = Math.abs(grid.scrollLeft)
         const maxScroll = grid.scrollWidth - grid.clientWidth
 
         if (arrow.classList.contains('carousel-arrow-right')) {
-            // Right arrow (scroll towards start in RTL)
-            arrow.classList.toggle('hidden', scrollLeft >= maxScroll - 5)
-        } else {
-            // Left arrow (scroll towards end in RTL)
+            // Right arrow: hide when at start (nothing to go back to)
             arrow.classList.toggle('hidden', scrollLeft <= 5)
+        } else {
+            // Left arrow: hide when at end (nothing more to see)
+            arrow.classList.toggle('hidden', scrollLeft >= maxScroll - 5)
         }
     })
 }
